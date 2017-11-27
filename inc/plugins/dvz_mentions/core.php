@@ -25,13 +25,24 @@ function getFormattedMessageFromPlaceholders(string $message, array $placeholder
 {
     $selectors = \dvzMentions\Parsing\getUniqueUserSelectorsFromMatches($placeholders);
 
-    if ($limit !== null && count($selectors) > $limit) {
+    if ($limit !== null && (count($selectors['userIds']) + count($selectors['usernames'])) > $limit) {
         $users = [];
     } else {
         $users = \dvzMentions\Data\getUsersBySelectors($selectors, \dvzMentions\Formatting\GetUserFieldList());
     }
 
     return \dvzMentions\Formatting\getFormattedMessageFromPlaceholdersAndUsers($message, $placeholders, $users);
+}
+
+function getIgnoredUsernames()
+{
+    static $ignoredUsernames;
+
+    if (!$ignoredUsernames) {
+        $ignoredUsernames = array_map('trim', \dvzMentions\getDelimitedSettingValues('ignored_values'));
+    }
+
+    return $ignoredUsernames;
 }
 
 // common
@@ -89,12 +100,22 @@ function getSettingValue(string $name): string
 
 function getCsvSettingValues(string $name): array
 {
-    global $mybb;
-    static $csvSettingValues;
+    static $values;
 
-    if (!isset($csvSettingValues[$name])) {
-        $csvSettingValues[$name] = array_filter(explode(',', getSettingValue($name)));
+    if (!isset($values[$name])) {
+        $values[$name] = array_filter(explode(',', getSettingValue($name)));
     }
 
-    return $csvSettingValues[$name];
+    return $values[$name];
+}
+
+function getDelimitedSettingValues(string $name): array
+{
+    static $values;
+
+    if (!isset($values[$name])) {
+        $values[$name] = array_filter(preg_split("/\\r\\n|\\r|\\n/", getSettingValue($name)));
+    }
+
+    return $values[$name];
 }

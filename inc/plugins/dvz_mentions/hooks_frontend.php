@@ -13,7 +13,7 @@ function global_start()
 
 function parse_message_me_mycode(string $message): string
 {
-    $matches = \dvzMentions\Parsing\getMatches($message, true, \dvzMentions\getSettingValue('match_limit'));
+    $matches = \dvzMentions\Parsing\getMatches($message, false, \dvzMentions\getSettingValue('match_limit'));
 
     $message = \dvzMentions\Formatting\getMessageWithPlaceholders(
         $message,
