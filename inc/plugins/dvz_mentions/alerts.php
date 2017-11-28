@@ -21,9 +21,13 @@ function getInstalledLocations(): array
 
 function isLocationAlertTypePresent(string $locationName): bool
 {
-    $alertTypeManager = \MybbStuff_MyAlerts_AlertTypeManager::getInstance();
+    if (\dvzMentions\Alerts\myalertsIsIntegrable()) {
+        $alertTypeManager = \MybbStuff_MyAlerts_AlertTypeManager::getInstance();
 
-    return $alertTypeManager->getByCode('dvz_mentions_' . $locationName) !== null;
+        return $alertTypeManager->getByCode('dvz_mentions_' . $locationName) !== null;
+    } else {
+        return false;
+    }
 }
 
 function installLocation(string $name)
@@ -108,20 +112,26 @@ function myalertsIsIntegrable(): bool
 {
     global $cache;
 
-    $pluginsCache = $cache->read('plugins');
+    static $status;
 
-    if (!empty($pluginsCache['active']) && in_array('myalerts', $pluginsCache['active'])) {
-        if ($euantor_plugins = $cache->read('euantor_plugins')) {
-            if (isset($euantor_plugins['myalerts']['version'])) {
-                $version = explode('.', $euantor_plugins['myalerts']['version']);
-                if ($version[0] == '2' && $version[1] == '0') {
-                    return true;
+    if (!$status) {
+        $status = false;
+
+        $pluginsCache = $cache->read('plugins');
+
+        if (!empty($pluginsCache['active']) && in_array('myalerts', $pluginsCache['active'])) {
+            if ($euantor_plugins = $cache->read('euantor_plugins')) {
+                if (isset($euantor_plugins['myalerts']['version'])) {
+                    $version = explode('.', $euantor_plugins['myalerts']['version']);
+                    if ($version[0] == '2' && $version[1] == '0') {
+                        $status = true;
+                    }
                 }
             }
         }
     }
 
-    return false;
+    return $status;
 }
 
 function queueAlerts(string $locationName, array $alertDetails, array $locationData, array $mentionedUserIds, int $authorUserId = null)

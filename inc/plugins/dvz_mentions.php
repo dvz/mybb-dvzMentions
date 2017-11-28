@@ -157,6 +157,19 @@ function dvz_mentions_is_installed()
     return (bool)$db->num_rows($query);
 }
 
+function dvz_mentions_activate()
+{
+    global $cache;
+
+    $pluginCache = $cache->read('dvz_mentions');
+
+    if (isset($pluginCache['version']) && version_compare($pluginCache['version'], dvz_mentions_info()['version']) == -1) {
+        $pluginCache['version'] = dvz_mentions_info()['version'];
+
+        $cache->update('dvz_mentions', $pluginCache);
+    }
+}
+
 // helpers
 function dvz_mentions_admin_load_pluginlibrary()
 {

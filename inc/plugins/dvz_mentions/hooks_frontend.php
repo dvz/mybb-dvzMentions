@@ -6,8 +6,10 @@ function global_start()
 {
     global $mybb, $lang;
 
-    if ($mybb->user['uid'] != 0) {
-        \dvzMentions\Alerts\registerMyalertsFormatters();
+    if (\dvzMentions\Alerts\myalertsIsIntegrable()) {
+        if ($mybb->user['uid'] != 0) {
+            \dvzMentions\Alerts\registerMyalertsFormatters();
+        }
     }
 }
 

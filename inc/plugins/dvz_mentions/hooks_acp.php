@@ -17,57 +17,59 @@ function admin_config_plugins_begin()
 {
     global $mybb, $lang;
 
-    $availableLocations = \dvzMentions\Alerts\getAvailableLocations();
-    $installedLocations = \dvzMentions\Alerts\getInstalledLocations();
+    if (\dvzMentions\Alerts\myalertsIsIntegrable()) {
+        $availableLocations = \dvzMentions\Alerts\getAvailableLocations();
+        $installedLocations = \dvzMentions\Alerts\getInstalledLocations();
 
-    if ($availableLocations) {
-        $lang->load('dvz_mentions');
+        if ($availableLocations) {
+            $lang->load('dvz_mentions');
 
-        $alertTypeManager = \MybbStuff_MyAlerts_AlertTypeManager::getInstance();
+            $alertTypeManager = \MybbStuff_MyAlerts_AlertTypeManager::getInstance();
 
-        // location installation handling
-        $locationName = $mybb->get_input('dvz_mentions_alerts_install');
+            // location installation handling
+            $locationName = $mybb->get_input('dvz_mentions_alerts_install');
 
-        if ($locationName && \verify_post_check($mybb->get_input('my_post_key'))) {
-            if (in_array($locationName, $availableLocations)) {
-                if (!in_array($locationName, $installedLocations)) {
-                    \dvzMentions\Alerts\installLocation($locationName);
-                    \flash_message($lang->dvz_mentions_alerts_installed, 'success');
-                    \admin_redirect('index.php?module=config-plugins');
+            if ($locationName && \verify_post_check($mybb->get_input('my_post_key'))) {
+                if (in_array($locationName, $availableLocations)) {
+                    if (!in_array($locationName, $installedLocations)) {
+                        \dvzMentions\Alerts\installLocation($locationName);
+                        \flash_message($lang->dvz_mentions_alerts_installed, 'success');
+                        \admin_redirect('index.php?module=config-plugins');
+                    }
                 }
             }
-        }
 
-        // location uninstallation handling
-        $locationName = $mybb->get_input('dvz_mentions_alerts_uninstall');
+            // location uninstallation handling
+            $locationName = $mybb->get_input('dvz_mentions_alerts_uninstall');
 
-        if ($locationName && \verify_post_check($mybb->get_input('my_post_key'))) {
-            if (in_array($locationName, $availableLocations)) {
-                if (in_array($locationName, $installedLocations)) {
-                    \dvzMentions\Alerts\uninstallLocation($locationName);
-                    \flash_message($lang->dvz_mentions_alerts_uninstalled, 'success');
-                    \admin_redirect('index.php?module=config-plugins');
+            if ($locationName && \verify_post_check($mybb->get_input('my_post_key'))) {
+                if (in_array($locationName, $availableLocations)) {
+                    if (in_array($locationName, $installedLocations)) {
+                        \dvzMentions\Alerts\uninstallLocation($locationName);
+                        \flash_message($lang->dvz_mentions_alerts_uninstalled, 'success');
+                        \admin_redirect('index.php?module=config-plugins');
+                    }
                 }
             }
+
+            // location list
+            $appendix = $lang->dvz_mentions_alerts;
+
+            $locationList = [];
+
+            foreach ($availableLocations as $locationName) {
+                $installed = in_array($locationName, $installedLocations);
+
+                $locationName = $installed ? '<b>' . $locationName . '</b>' : $locationName;
+                $actionUrl = 'index.php?module=config-plugins&amp;dvz_mentions_alerts_' . ($installed ? 'uninstall' : 'install') . '=' . \htmlspecialchars_uni($locationName) . '&amp;my_post_key=' . $mybb->post_code;
+                $actionText = $installed ? $lang->dvz_mentions_alerts_uninstall : $lang->dvz_mentions_alerts_install;
+
+                $locationList[] = $locationName . ' <a href="' . $actionUrl . '">[' . $actionText . ']</a>';
+            }
+
+            $appendix .= ' ' . implode(' &middot; ', $locationList) . '<br>';
+
+            $GLOBALS['dvzMentionsDescriptionAppendix'] .= $appendix;
         }
-
-        // location list
-        $appendix = $lang->dvz_mentions_alerts;
-
-        $locationList = [];
-
-        foreach ($availableLocations as $locationName) {
-            $installed = in_array($locationName, $installedLocations);
-
-            $locationName = $installed ? '<b>' . $locationName . '</b>' : $locationName;
-            $actionUrl = 'index.php?module=config-plugins&amp;dvz_mentions_alerts_' . ($installed ? 'uninstall' : 'install') . '=' . \htmlspecialchars_uni($locationName) . '&amp;my_post_key=' . $mybb->post_code;
-            $actionText = $installed ? $lang->dvz_mentions_alerts_uninstall : $lang->dvz_mentions_alerts_install;
-
-            $locationList[] = $locationName . ' <a href="' . $actionUrl . '">[' . $actionText . ']</a>';
-        }
-
-        $appendix .= ' ' . implode(' &middot; ', $locationList) . '<br>';
-
-        $GLOBALS['dvzMentionsDescriptionAppendix'] .= $appendix;
     }
 }
