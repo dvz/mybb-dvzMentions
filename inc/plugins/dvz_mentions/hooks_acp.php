@@ -60,11 +60,11 @@ function admin_config_plugins_begin()
             foreach ($availableLocations as $locationName) {
                 $installed = in_array($locationName, $installedLocations);
 
-                $locationName = $installed ? '<b>' . $locationName . '</b>' : $locationName;
+                $displayLocationName = $installed ? '<b>' . $locationName . '</b>' : $locationName;
                 $actionUrl = 'index.php?module=config-plugins&amp;dvz_mentions_alerts_' . ($installed ? 'uninstall' : 'install') . '=' . \htmlspecialchars_uni($locationName) . '&amp;my_post_key=' . $mybb->post_code;
                 $actionText = $installed ? $lang->dvz_mentions_alerts_uninstall : $lang->dvz_mentions_alerts_install;
 
-                $locationList[] = $locationName . ' <a href="' . $actionUrl . '">[' . $actionText . ']</a>';
+                $locationList[] = $displayLocationName . ' <a href="' . $actionUrl . '">[' . $actionText . ']</a>';
             }
 
             $appendix .= ' ' . implode(' &middot; ', $locationList) . '<br>';
