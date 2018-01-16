@@ -7,6 +7,8 @@ $l['dvz_mentions_alerts_uninstall'] = 'uninstall';
 $l['dvz_mentions_alerts_installed'] = 'MyAlerts integration has been installed.';
 $l['dvz_mentions_alerts_uninstalled'] = 'MyAlerts integration has been uninstalled.';
 
+$l['dvz_mentions_admin_pluginlibrary_missing'] = 'Add <a href="https://mods.mybb.com/view/pluginlibrary">PluginLibrary</a> in order to use the plugin.';
+
 $l['setting_group_dvz_mentions'] = 'DVZ Mentions';
 $l['setting_group_dvz_mentions_desc'] = 'Settings for DVZ Mentions.';
 
