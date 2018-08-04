@@ -17,7 +17,7 @@ function alertPossible(array $locationData, int $userId): bool
         if ($row) {
             $usersCache[$userId] = [
                 'ignored_users' => explode(',', $row['ignorelist']),
-                'groups' => array_merge([$row['usergroup']], explode(',', $row['additionalgroups'])),
+                'groups' => array_filter(array_merge([$row['usergroup']], explode(',', $row['additionalgroups']))),
             ];
         } else {
             return false;
