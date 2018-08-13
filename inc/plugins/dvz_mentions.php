@@ -47,7 +47,7 @@ function dvz_mentions_info()
         'website'       => 'https://devilshakerz.com/',
         'author'        => 'Tomasz \'Devilshakerz\' Mlynski',
         'authorsite'    => 'https://devilshakerz.com/',
-        'version'       => '1.0.4',
+        'version'       => '1.0.5',
         'codename'      => 'dvz_mentions',
         'compatibility' => '18*',
     ];
