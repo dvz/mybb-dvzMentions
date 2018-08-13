@@ -14,7 +14,7 @@ function getMatches(string $message, bool $stripIndirectContent = false, int $li
     $messageContent = $message;
 
     if ($stripIndirectContent) {
-        $messageContent = preg_replace('/\[(quote|code|php)(=[^\]]*)?\](.*?)\[\/\1\]/si', null, $message);
+        $messageContent = \dvzMentions\Parsing\getMessageWithoutIndirectContent($message);
     }
 
     $lengthRange = \dvzMentions\getSettingValue('min_value_length') . ',' . \dvzMentions\getSettingValue('max_value_length');
@@ -110,4 +110,36 @@ function getUniqueUserSelectorsFromMatches(array $matches): array
     }
 
     return $selectors;
+}
+
+function getMessageWithoutIndirectContent(string $message)
+{
+    global $cache;
+
+    // strip default tags
+    $message = preg_replace('/\[(quote|code|php)(=[^\]]*)?\](.*?)\[\/\1\]/si', null, $message);
+
+    // strip tags with DVZ Code Tags syntax
+    $pluginsCache = $cache->read('plugins');
+
+    if (!empty($pluginsCache['active']) && in_array('dvz_code_tags', $pluginsCache['active'])) {
+        $_blackhole = [];
+
+        if (\dvzCodeTags\getSettingValue('parse_block_fenced_code')) {
+            $matches = \dvzCodeTags\Parsing\getFencedCodeMatches($message);
+            $message = \dvzCodeTags\Formatting\getMessageWithPlaceholders($message, $matches, $_blackhole);
+        }
+
+        if (\dvzCodeTags\getSettingValue('parse_block_mycode_code')) {
+            $matches = \dvzCodeTags\Parsing\getMycodeCodeMatches($message);
+            $message = \dvzCodeTags\Formatting\getMessageWithPlaceholders($message, $matches, $_blackhole);
+        }
+
+        if (\dvzCodeTags\getSettingValue('parse_inline_backticks_code')) {
+            $matches = \dvzCodeTags\Parsing\getInlineCodeMatches($message);
+            $message = \dvzCodeTags\Formatting\getMessageWithPlaceholders($message, $matches, $_blackhole);
+        }
+    }
+
+    return $message;
 }
