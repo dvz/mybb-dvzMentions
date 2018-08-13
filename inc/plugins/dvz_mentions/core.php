@@ -2,10 +2,10 @@
 
 namespace dvzMentions;
 
-function getMentionedUserIds(string $message): array
+function getMentionedUserIds(string $message, bool $stripIndirectContent = false): array
 {
     $selectors = \dvzMentions\Parsing\getUniqueUserSelectorsFromMatches(
-        \dvzMentions\Parsing\getMatches($message)
+        \dvzMentions\Parsing\getMatches($message, $stripIndirectContent)
     );
 
     $userIds = $selectors['userIds'];

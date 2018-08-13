@@ -30,7 +30,7 @@ function newthread_do_newthread_end()
             'subject'   => $new_thread['subject'],
         ];
 
-        $mentionedUserIds = \dvzMentions\getMentionedUserIds($message);
+        $mentionedUserIds = \dvzMentions\getMentionedUserIds($message, true);
 
         if ($mentionedUserIds) {
             \dvzMentions\Alerts\queueAlerts('post', $alertDetails, $locationData, $mentionedUserIds, $mybb->user['uid']);
@@ -60,7 +60,7 @@ function newreply_do_newreply_end()
             'subject'   => $thread_subject,
         ];
 
-        $mentionedUserIds = \dvzMentions\getMentionedUserIds($message);
+        $mentionedUserIds = \dvzMentions\getMentionedUserIds($message, true);
 
         if ($mentionedUserIds) {
             \dvzMentions\Alerts\queueAlerts('post', $alertDetails, $locationData, $mentionedUserIds, $post['uid']);
@@ -103,8 +103,8 @@ function datahandler_post_update(\PostDataHandler $PostDataHandler)
             'author'    => (int)$postData['uid'],
         ];
 
-        $mentionedUserIdsOld = \dvzMentions\getMentionedUserIds($GLOBALS['dvzMentionsEditOldMessage']);
-        $mentionedUserIds = \dvzMentions\getMentionedUserIds($message);
+        $mentionedUserIdsOld = \dvzMentions\getMentionedUserIds($GLOBALS['dvzMentionsEditOldMessage'], true);
+        $mentionedUserIds = \dvzMentions\getMentionedUserIds($message, true);
 
         $mentionedUserIds = array_diff($mentionedUserIds, $mentionedUserIdsOld);
 
