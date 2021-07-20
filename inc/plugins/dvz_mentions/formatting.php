@@ -14,7 +14,7 @@ function getFormattedMessageFromPlaceholdersAndUsers(string $content, array $pla
                 $replacement = $fingerprint['full'];
             }
 
-            $content = str_replace('<DVZ_ME#' . $index . '>', $replacement, $content);
+            $content = str_replace('<dvz_me_placeholder id="' . $index . '" />', $replacement, $content);
         }
     }
 
@@ -38,7 +38,7 @@ function getMessageWithPlaceholders(string $message, array $matches, array &$pla
             $placeholders[] = $fingerprint;
         }
 
-        $match['replacement'] = '<DVZ_ME#' . $placeholderId . '>';
+        $match['replacement'] = '<dvz_me_placeholder id="' . $placeholderId . '" />';
     }
 
     $message = \dvzMentions\Formatting\replaceMatchesInMessage($message, $matches);
