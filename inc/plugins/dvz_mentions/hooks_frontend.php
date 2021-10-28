@@ -31,20 +31,20 @@ function parse_message_me_mycode(string $message): string
     if($mybb->settings['allowautourl'] == 1) {
         // RegEx used in postParser::mycode_auto_url()
         $preMatchReplacementsPatterns[] = "~
-				<a\\s[^>]*>.*?</a>|								# match and return existing links
-				(?<=^|[\s\(\)\[\>])								# character preceding the link
-				(?P<prefix>
-					(?:http|https|ftp|news|irc|ircs|irc6)://|	# scheme, or
-					(?:www|ftp)\.								# common subdomain
-				)
-				(?P<link>
-					(?:[^\/\"\s\<\[\.]+\.)*[\w]+				# host
-					(?::[0-9]+)?								# port
-					(?:/(?:[^\"\s<\[&]|\[\]|&(?:amp|lt|gt);)*)?	# path, query, fragment; exclude unencoded characters
-					[\w\/\)]
-				)
-				(?![^<>]*?>)									# not followed by unopened > (within HTML tags)
-			~iusx";
+            <a\\s[^>]*>.*?</a>|								# match and return existing links
+            (?<=^|[\s\(\)\[\>])								# character preceding the link
+            (?P<prefix>
+                (?:http|https|ftp|news|irc|ircs|irc6)://|	# scheme, or
+                (?:www|ftp)\.								# common subdomain
+            )
+            (?P<link>
+                (?:[^\/\"\s\<\[\.]+\.)*[\w]+				# host
+                (?::[0-9]+)?								# port
+                (?:/(?:[^\"\s<\[&]|\[\]|&(?:amp|lt|gt);)*)?	# path, query, fragment; exclude unencoded characters
+                [\w\/\)]
+            )
+            (?![^<>]*?>)									# not followed by unopened > (within HTML tags)
+        ~iusx";
     }
 
     $preMatchReplacedStrings = [];
