@@ -28,7 +28,7 @@ function getFormattedMessageFromPlaceholders(string $message, array $placeholder
     if ($limit !== null && (count($selectors['userIds']) + count($selectors['usernames'])) > $limit) {
         $users = [];
     } else {
-        $users = \dvzMentions\Data\getUsersBySelectors($selectors, \dvzMentions\Formatting\GetUserFieldList());
+        $users = \dvzMentions\Data\getUsersBySelectors($selectors, \dvzMentions\Formatting\getUserFieldList());
     }
 
     return \dvzMentions\Formatting\getFormattedMessageFromPlaceholdersAndUsers($message, $placeholders, $users);

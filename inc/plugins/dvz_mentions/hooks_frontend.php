@@ -61,7 +61,7 @@ function parse_message_me_mycode(string $message): string
 
             return $replacement;
         },
-        $message,
+        $message
     );
 
     // find matches and insert placeholders
@@ -78,7 +78,7 @@ function parse_message_me_mycode(string $message): string
         $message = str_replace(
             '<dvz_me_prematch_placeholder id="' . $index . '" />',
             $replacedString,
-            $message,
+            $message
         );
     }
 

@@ -24,8 +24,6 @@ function admin_config_plugins_begin()
         if ($availableLocations) {
             $lang->load('dvz_mentions');
 
-            $alertTypeManager = \MybbStuff_MyAlerts_AlertTypeManager::getInstance();
-
             // location installation handling
             $locationName = $mybb->get_input('dvz_mentions_alerts_install');
 
