@@ -32,7 +32,7 @@ function isLocationAlertTypePresent(string $locationName): bool
 
 function installLocation(string $name)
 {
-    global $db, $cache;
+    global $cache;
 
     // add datacache value if not present
     $cacheEntry = $cache->read('dvz_mentions');
@@ -54,7 +54,7 @@ function installLocation(string $name)
 
 function uninstallLocation(string $name)
 {
-    global $db, $cache;
+    global $cache;
 
     // remove MyAlerts type
     $alertTypeManager = \MybbStuff_MyAlerts_AlertTypeManager::getInstance();
@@ -85,8 +85,6 @@ function initMyalerts()
 
 function initLocations()
 {
-    global $plugins;
-
     foreach (\dvzMentions\Alerts\getInstalledLocations() as $locationName) {
         require_once MYBB_ROOT . 'inc/plugins/dvz_mentions/alertLocations/' . $locationName . '/init.php';
     }

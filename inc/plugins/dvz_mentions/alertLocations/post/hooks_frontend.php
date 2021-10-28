@@ -116,7 +116,5 @@ function datahandler_post_update(\PostDataHandler $PostDataHandler)
 
 function class_moderation_delete_post($pid)
 {
-    global $post, $thread;
-
     \dvzMentions\Alerts\deleteAlertsByLocationAndObjectId('post', $pid);
 }

@@ -4,7 +4,7 @@ namespace dvzMentions\Hooks;
 
 function global_start()
 {
-    global $mybb, $lang;
+    global $mybb;
 
     if (\dvzMentions\Alerts\myalertsIsIntegrable()) {
         if ($mybb->user['uid'] != 0) {
