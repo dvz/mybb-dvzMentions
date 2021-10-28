@@ -74,13 +74,12 @@ function uninstallLocation(string $name)
 function initMyalerts()
 {
     defined('MYBBSTUFF_CORE_PATH') or define('MYBBSTUFF_CORE_PATH', MYBB_ROOT . 'inc/plugins/MybbStuff/Core/');
-    defined('MYALERTS_PLUGIN_PATH') or define('MYALERTS_PLUGIN_PATH', MYBB_ROOT . 'inc/plugins/MybbStuff/MyAlerts');
     defined('PLUGINLIBRARY') or define('PLUGINLIBRARY', MYBB_ROOT . 'inc/plugins/pluginlibrary.php');
 
     require_once MYBBSTUFF_CORE_PATH . 'ClassLoader.php';
 
     $classLoader = new \MybbStuff_Core_ClassLoader();
-    $classLoader->registerNamespace('MybbStuff_MyAlerts', [MYALERTS_PLUGIN_PATH . '/src']);
+    $classLoader->registerNamespace('MybbStuff_MyAlerts', [MYBB_ROOT . 'inc/plugins/MybbStuff/MyAlerts/src']);
     $classLoader->register();
 }
 
@@ -140,17 +139,17 @@ function queueAlerts(string $locationName, array $alertDetails, array $locationD
         $key = array_search($authorUserId, $mentionedUserIds);
 
         if ($key !== false) {
-            unset($mentionedUserIds[$index]);
+            unset($mentionedUserIds[$key]);
         }
     }
 
     $alertType = \MybbStuff_MyAlerts_AlertTypeManager::getInstance()->getByCode('dvz_mentions_' . $locationName);
 
-    $alerts = [];
+    if ($alertType && $alertType->getEnabled()) {
+        $alerts = [];
 
-    foreach ($mentionedUserIds as $userId) {
-        if (call_user_func_array('dvzMentions\\Alerts\\' . ucfirst($locationName) . '\\alertPossible', [$locationData, $userId])) {
-            if ($alertType && $alertType->getEnabled()) {
+        foreach ($mentionedUserIds as $userId) {
+            if (call_user_func_array('dvzMentions\\Alerts\\' . ucfirst($locationName) . '\\alertPossible', [$locationData, $userId])) {
                 $alert = new \MybbStuff_MyAlerts_Entity_Alert();
 
                 $alert->setType($alertType)
@@ -168,10 +167,10 @@ function queueAlerts(string $locationName, array $alertDetails, array $locationD
                 $alerts[] = $alert;
             }
         }
-    }
 
-    if ($alerts) {
-        \MybbStuff_MyAlerts_AlertManager::getInstance()->addAlerts($alerts);
+        if ($alerts) {
+            \MybbStuff_MyAlerts_AlertManager::getInstance()->addAlerts($alerts);
+        }
     }
 }
 
@@ -184,7 +183,13 @@ function deleteAlertsByLocationAndObjectId(string $locationName, int $objectId):
 {
     global $db;
 
-    $alertTypeId = \MybbStuff_MyAlerts_AlertTypeManager::getInstance()->getByCode('dvz_mentions_' . $locationName)->getId();
+    $alertType = \MybbStuff_MyAlerts_AlertTypeManager::getInstance()->getByCode('dvz_mentions_' . $locationName);
 
-    return $db->delete_query('alerts', 'alert_type_id=' . (int)$alertTypeId . ' AND object_id=' . (int)$objectId);
+    if ($alertType) {
+        $alertTypeId = $alertType->getId();
+
+        return $db->delete_query('alerts', 'alert_type_id=' . (int)$alertTypeId . ' AND object_id=' . (int)$objectId);
+    } else {
+        return false;
+    }
 }

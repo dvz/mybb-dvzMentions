@@ -42,7 +42,7 @@ function alertPossible(array $locationData, int $userId): bool
     $postData = \get_post($locationData['pid']);
 
     // forum permissions
-    $forumPermissions = $cache->read('forumpermissions')[ $locationData['fid'] ];
+    $forumPermissions = $cache->read('forumpermissions')[ $locationData['fid'] ] ?? null;
 
     $permissions = [
         'canview'               => false,
@@ -67,7 +67,7 @@ function alertPossible(array $locationData, int $userId): bool
             $permissions['canviewthreads'] = true;
         }
 
-        if ($groupPermissions['canonlyviewownthreads']) {
+        if (!empty($groupPermissions['canonlyviewownthreads'])) {
             if ($permissions['canonlyviewownthreads'] == null) {
                 $permissions['canonlyviewownthreads'] = true;
             }
