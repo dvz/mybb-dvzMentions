@@ -5,7 +5,7 @@ namespace dvzMentions\Parsing;
 function getMentionedUsernames(string $message): array
 {
     return \dvzMentions\Parsing\getUniqueUsernamesFromMatches(
-        \dvzMentions\Parsing\getMatches($mesasge)
+        \dvzMentions\Parsing\getMatches($message)
     );
 }
 
