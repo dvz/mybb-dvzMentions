@@ -5,7 +5,7 @@ A MyBB 1.8.x plugin for parsing `@username`, `@username#id` mentions into profil
 Compatible with JSON-encoded AJAX requests going through `xmlhttp.php`.
 
 **Requirements:**
-- PHP >= 7.0
+- PHP >= 7.1
 
 **Suggestions and general feedback:** https://community.mybb.com/thread-155882.html
 
