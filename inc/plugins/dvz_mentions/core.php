@@ -21,7 +21,7 @@ function getMentionedUserIds(string $message, bool $stripIndirectContent = false
     return $userIds;
 }
 
-function getFormattedMessageFromPlaceholders(string $message, array $placeholders, int $limit = null): string
+function getFormattedMessageFromPlaceholders(string $message, array $placeholders, ?int $limit = null): string
 {
     $selectors = \dvzMentions\Parsing\getUniqueUserSelectorsFromMatches($placeholders);
 
@@ -60,7 +60,7 @@ function isStaticRender(): bool
     return $status;
 }
 
-function addHooks(array $hooks, string $namespace = null)
+function addHooks(array $hooks, ?string $namespace = null)
 {
     global $plugins;
 
@@ -85,7 +85,7 @@ function addHooksNamespace(string $namespace)
     foreach ($definedUserFunctions as $callable) {
         $namespaceWithPrefixLength = strlen($namespaceLowercase) + 1;
         if (substr($callable, 0, $namespaceWithPrefixLength) == $namespaceLowercase . '\\') {
-            $hookName = substr_replace($callable, null, 0, $namespaceWithPrefixLength);
+            $hookName = substr_replace($callable, '', 0, $namespaceWithPrefixLength);
 
             $plugins->add_hook($hookName, $namespace . '\\' . $hookName);
         }

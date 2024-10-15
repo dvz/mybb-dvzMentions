@@ -131,7 +131,7 @@ function myalertsIsIntegrable(): bool
     return $status;
 }
 
-function queueAlerts(string $locationName, array $alertDetails, array $locationData, array $mentionedUserIds, int $authorUserId = null)
+function queueAlerts(string $locationName, array $alertDetails, array $locationData, array $mentionedUserIds, ?int $authorUserId = null)
 {
     if ($authorUserId !== null) {
         $key = array_search($authorUserId, $mentionedUserIds);

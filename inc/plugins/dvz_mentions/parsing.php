@@ -9,7 +9,7 @@ function getMentionedUsernames(string $message): array
     );
 }
 
-function getMatches(string $message, bool $stripIndirectContent = false, int $limit = null): array
+function getMatches(string $message, bool $stripIndirectContent = false, ?int $limit = null): array
 {
     $messageContent = $message;
 
@@ -124,7 +124,7 @@ function getMessageWithoutIndirectContent(string $message)
     global $cache;
 
     // strip default tags
-    $message = preg_replace('/\[(quote|code|php)(=[^\]]*)?\](.*?)\[\/\1\]/si', null, $message);
+    $message = preg_replace('/\[(quote|code|php)(=[^\]]*)?\](.*?)\[\/\1\]/si', '', $message);
 
     // strip tags with DVZ Code Tags syntax
     $pluginsCache = $cache->read('plugins');
