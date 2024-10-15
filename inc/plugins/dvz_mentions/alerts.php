@@ -120,7 +120,7 @@ function myalertsIsIntegrable(): bool
             if ($euantor_plugins = $cache->read('euantor_plugins')) {
                 if (isset($euantor_plugins['myalerts']['version'])) {
                     $version = explode('.', $euantor_plugins['myalerts']['version']);
-                    if ($version[0] == '2' && $version[1] == '0') {
+                    if ($version[0] == '2') {
                         $status = true;
                     }
                 }
