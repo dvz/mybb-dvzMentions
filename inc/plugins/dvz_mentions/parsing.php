@@ -123,8 +123,8 @@ function getMessageWithoutIndirectContent(string $message)
 {
     global $cache;
 
-    // strip default tags
-    $message = preg_replace('/\[(quote|code|php)(=[^\]]*)?\](.*?)\[\/\1\]/si', '', $message);
+    // strip non-nestable tags
+    $message = preg_replace('/\[(code|php)(=[^\]]*)?\](.*?)\[\/\1\]/si', '', $message);
 
     // strip tags with DVZ Code Tags syntax
     $pluginsCache = $cache->read('plugins');
@@ -148,5 +148,87 @@ function getMessageWithoutIndirectContent(string $message)
         }
     }
 
+    // strip nestable tags
+    $message = \dvzMentions\Parsing\getMessageWithoutQuotes($message);
+
     return $message;
+}
+
+function getMessageWithoutQuotes(string $message): string
+{
+    // collect start & end offsets
+    /**
+     * @var $bounds array<non-negative-int, bool>
+     *
+     * Types of found bounds by offset (inclusive). `true` if start bound, `false` if end bound.
+     */
+    $bounds = [];
+
+    preg_match_all(
+        '/(?<open>\[quote(?:=[^\]]*)?\])|(?<close>\[\/quote\])/i',
+        $message,
+        $sets,
+        PREG_SET_ORDER | PREG_OFFSET_CAPTURE
+    );
+
+    foreach ($sets as $set) {
+        if ($set['open'][0] !== '') {
+            [$string, $offset] = $set['open'];
+
+            $bounds[$offset] = true;
+        } elseif ($set['close'][0] !== '') {
+            [$string, $offset] = $set['close'];
+
+            $lastInclusiveOffset = $offset + strlen($string) - 1;
+
+            $bounds[$lastInclusiveOffset] = false;
+        }
+    }
+
+
+    // determine top-level ranges, assuming valid structure
+    /**
+     * @var $topLevelRanges array<non-negative-int, non-negative-int>
+     *
+     * Ranges found at the top level of nesting (inclusive).
+     *
+     */
+    $topLevelRanges = [];
+
+    $topLevelStartOffsets = [];
+    $depth = 0;
+
+    foreach ($bounds as $offset => $isStart) {
+        if ($isStart) {
+            if ($depth === 0) {
+                $topLevelStartOffsets[] = $offset;
+            }
+
+            $depth++;
+        } elseif ($depth >= 1) {
+            $depth--;
+
+            if ($depth === 0) {
+                $topLevelRanges[] = [array_pop($topLevelStartOffsets), $offset];
+            }
+        }
+    }
+
+
+    // construct string without top-level tags
+    $result = '';
+    $readOffset = 0;
+
+    foreach ($topLevelRanges as $range) {
+        [$start, $end] = $range;
+
+        $result .= substr($message, $readOffset, $start - $readOffset);
+
+        $readOffset = $end + 1;
+    }
+
+    $result .= substr($message, $readOffset);
+
+
+    return $result;
 }
