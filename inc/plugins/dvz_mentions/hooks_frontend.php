@@ -20,6 +20,8 @@ function parse_message_me_mycode(string $message): string
     // temporarily replace content where tags shouldn't be parsed
     $preMatchReplacementsPatterns = [];
 
+    $preMatchReplacementsPatterns[] = "#\[quote=([\"']|&quot;|)(.*?)(?:\\1)(.*?)(?:[\"']|&quot;)?\]#si";
+
     if ($mybb->settings['allowlinkmycode'] == 1) {
         $preMatchReplacementsPatterns[] = '#\[url(?:=.*?)?\].*?\[/url\]#si';
     }
