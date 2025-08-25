@@ -124,7 +124,7 @@ function getMessageWithoutIndirectContent(string $message)
     global $cache;
 
     // strip non-nestable tags
-    $message = preg_replace('/\[(code|php)(=[^\]]*)?\](.*?)\[\/\1\]/si', '', $message);
+    $message = preg_replace('/\[(code|php)(=[^\]]*)?\](.*?)\[\/\1\]/si', "\n", $message);
 
     // strip tags with DVZ Code Tags syntax
     $pluginsCache = $cache->read('plugins');
@@ -223,6 +223,8 @@ function getMessageWithoutQuotes(string $message): string
         [$start, $end] = $range;
 
         $result .= substr($message, $readOffset, $start - $readOffset);
+
+        $result .= "\n";
 
         $readOffset = $end + 1;
     }
