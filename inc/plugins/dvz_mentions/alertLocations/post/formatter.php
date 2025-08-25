@@ -12,8 +12,7 @@ class MybbStuff_MyAlerts_Formatter_dvzMentionsPostFormatter extends MybbStuff_My
         return $this->lang->sprintf(
             $this->lang->myalerts_dvz_mentions_post_alert,
             $outputAlert['from_user'],
-            htmlspecialchars_uni($parser->parse_badwords($alertDetails['subject'])),
-            $outputAlert['dateline']
+            htmlspecialchars_uni($parser->parse_badwords($alertDetails['subject']))
         );
     }
 
