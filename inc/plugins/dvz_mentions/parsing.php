@@ -41,7 +41,7 @@ function getMatches(string $message, bool $stripIndirectContent = false, ?int $l
     $matches = [];
 
     if (!empty($regexMatchSets)) {
-        if ($limit !== null & count($regexMatchSets) > $limit) {
+        if ($limit !== null && count($regexMatchSets) > $limit) {
             $matches = [];
         } else {
             $ignoredUsernames = \dvzMentions\getIgnoredUsernames();
